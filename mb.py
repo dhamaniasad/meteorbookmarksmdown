@@ -4,6 +4,7 @@ import filecmp
 import os
 from apscheduler.schedulers.background import BackgroundScheduler
 import time
+import logging
 
 
 def run():
@@ -19,11 +20,23 @@ def run():
         os.remove('source.md')
         f2 = open('source.md', 'w+')
         print >> f2, mdown
+        gistkey = os.environ.get('GITHUBGISTKEY')
+        headers = {'Authorization': 'token %s' % (gistkey),
+        'User-Agent': 'dhamaniasad'}
+        data = {"description":"",
+        "files": {
+        "meteorbookmarks.md": {
+        "content": "%s" % (mdown)
+        }
+        }}
+        listgist = requests.patch("https://api.github.com/gists/646c4c4a3faec7616976", headers=headers, json=data)
+        print listgist.text
     os.remove('sourcediff.md')
 
+logging.basicConfig()
 apsched = BackgroundScheduler()
-apsched.add_job(run, 'interval', seconds=86400)
+apsched.add_job(run, 'interval', seconds=5)
 apsched.start()
 
 while True:
-    time.sleep(86000)
+    time.sleep(3)
