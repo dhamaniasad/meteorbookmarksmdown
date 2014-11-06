@@ -35,8 +35,8 @@ def run():
 
 logging.basicConfig()
 apsched = BackgroundScheduler()
-apsched.add_job(run, 'interval', seconds=5)
+apsched.add_job(run, 'interval', seconds=3600)
 apsched.start()
 
 while True:
-    time.sleep(3)
+    time.sleep(3500)
